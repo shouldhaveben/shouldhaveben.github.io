@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Color and Font Tester</title>
+    <style>
+        body {
+            margin: 0;
+            background-color: #f8f8f8;
+        }
+
+        header {
+            position: sticky;
+            top: 0;
+            background-color: #fff;
+            padding: 10px;
+            height: 100px;
+            z-index: 1; /* Change z-index to 1 or any value lower than 1000 */
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        footer {
+            margin-top: 20px;
+            position: sticky;
+            top: 0;
+            background-color: #fff;
+            padding: 10px;
+            height: 100px;
+            z-index: 1; /* Change z-index to 1 or any value lower than 1000 */
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        form {
+            padding: 20px;
+            background-color: #fff;
+            max-width: 600px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 20px;
+        }
+        
+        button {
+            border-radius: 20px;
+            padding: 10px 20px;
+        }
+
+        .colorSelector {
+            appearance: none;
+
+            width: 48px;
+            height: 48px;
+            border-radius: 10px;
+            border: none;
+        }
+        .colorSelector::-webkit-color-swatch {
+            border-radius: 8px;
+        }
+        .colorSelector::-moz-color-swatch {
+            border-radius: 8px;
+        }
+
+        .userInputs {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+            gap: 20px;
+            padding: 20px;
+        }
+
+        .selectorField {
+            align-items: center;
+            
+            margin: 10px;
+            border: 1px black;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        #bgimg {
+            margin-top: 20px; /* Adjust margin to account for the header height */
+            padding: 20px;
+            max-width: 600px;
+            min-height: 350px;
+            margin-left: 20px;
+            margin-right: auto;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 20px;
+            background-image: url('https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?q=80&w=3074&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Color and Font Tester</h1>
+        <!-- Add any additional header content here -->
+    </header>
+
+    <div class="userInputs">
+        <form id="colorFontForm">
+            <h2>Site Colors</h2>
+
+            <div class="selectorField">
+                <label for="backgroundColor">Background Color:</label>
+                <input type="color" value="#eeeeee" class="colorSelector" id="backgroundColor" name="backgroundColor">
+            </div>
+    
+            <div class="selectorField">
+                <label for="containerColor">Container Color:</label>
+                <input type="color" class="colorSelector" id="containerColor" name="backgroundColor">    
+            </div>
+
+            <div class="selectorField">
+                <label for="accentColor">Accent #1:</label>
+                <input type="color" class="colorSelector" id="accentColor" name="accentColor">
+            </div>
+    
+            <div class="selectorField">
+                <label for="accentColor2">Accent #2:</label>
+                <input type="color" class="colorSelector" id="accentColor2" name="backgroundColor">
+            </div>
+    
+            <button type="button" onclick="updateStyles()">Apply Changes</button>
+        </form>
+    
+        <form id="headingsForm">
+            <h2>Headings</h2>
+            <label for="h1Color">H1 Color:</label>
+            <input type="color" class="colorSelector" id="h1Color" name="h1Color">
+            <br/>
+            <label for="headingFont">Heading Font:</label>
+            <select id="headingFont" name="headingFont">
+                <!-- Google Fonts options will be added here dynamically -->
+            </select>
+            <label for="headingFontVariation">Font Variation:</label>
+            <select id="headingFontVariation" name="headingFontVariation"></select>
+            <button type="button" onclick="updateStyles()">Apply Changes</button>
+    
+            <h1>Heading 1</h1>
+            <h2>Heading 2</h2>
+            <h3>Heading 3</h3>
+        </form>
+    
+        <form id="paragraphForm">
+            <h2>Paragraph Font Options</h2>
+            <label for="paragraphFont">Paragraph Font:</label>
+            <select id="paragraphFont" name="paragraphFont">
+                <!-- Google Fonts options will be added here dynamically -->
+            </select>
+            <label for="paragraphFontVariation">Font Variation:</label>
+            <select id="paragraphFontVariation" name="paragraphFontVariation"></select>
+            <button type="button" onclick="updateStyles()">Apply Changes</button>
+    
+            <p>
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+            </p>
+        </form>
+
+    </div>
+
+    <div class="container" id="bgimg"></div>
+
+</body>
+<footer>
+    <h2>Footer Section</h2>
+</footer>
+
+    <script>
+        function populateFontOptions(selectId, variationSelectId) {
+        fetch('https://www.googleapis.com/webfonts/v1/webfonts?key=AIzaSyAJ_bAt56Te0zV6bYvAIgmivWwc-0p5qHI')
+            .then(response => response.json())
+            .then(data => {
+                const fontSelect = document.getElementById(selectId);
+                const variationSelect = document.getElementById(variationSelectId);
+
+                fontSelect.addEventListener('change', function() {
+                    // Clear existing options in the variations dropdown
+                    variationSelect.innerHTML = '';
+
+                    // Get the selected font family
+                    const selectedFont = this.value;
+
+                    // Find the selected font in the data
+                    const selectedFontData = data.items.find(font => font.family === selectedFont);
+
+                    // Add variations for the selected font
+                    if (selectedFontData) {
+                        selectedFontData.variants.forEach(variation => {
+                            const variationOption = document.createElement('option');
+                            variationOption.value = variation;
+                            variationOption.textContent = variation;
+                            variationSelect.appendChild(variationOption);
+                        });
+                    }
+
+                    // Trigger the updateStyles function after fonts are loaded
+                    updateStyles();
+                });
+
+                // Populate initial fonts
+                data.items.forEach(font => {
+                    const option = document.createElement('option');
+                    option.value = font.family;
+                    option.textContent = font.family;
+                    fontSelect.appendChild(option);
+                });
+
+                // Trigger the updateStyles function after fonts are loaded
+                updateStyles();
+            })
+            .catch(error => console.error('Error fetching Google Fonts:', error));
+            }
+
+        populateFontOptions('headingFont', 'headingFontVariation');
+        populateFontOptions('paragraphFont', 'paragraphFontVariation');
+
+        function loadFont(fontName) {
+        fetch(`https://www.googleapis.com/webfonts/v1/webfonts/${encodeURIComponent(fontName)}?key=AIzaSyAJ_bAt56Te0zV6bYvAIgmivWwc-0p5qHI`)
+            .then(response => response.json())
+            .then(data => {
+                const style = document.createElement('style');
+                const variations = data.variants.map(variant => `${fontName}:${variant}`).join('|');
+                const fontUrl = `https://fonts.googleapis.com/css2?family=${variations}`;
+
+                style.textContent = `@import url('${fontUrl}');`;
+                document.head.appendChild(style);
+            })
+            .catch(error => console.error('Error fetching font variations:', error));
+    }
+
+
+        function updateStyles() {
+            // Get user inputs
+            const backgroundColor = document.getElementById('backgroundColor').value;
+            const h1Color = document.getElementById('h1Color').value;
+            const accentColor = document.getElementById('accentColor').value;
+            const paragraphFont = document.getElementById('paragraphFont').value;
+            const headingFont = document.getElementById('headingFont').value;
+            const paragraphFontVariation = document.getElementById('paragraphFontVariation').value;
+            const headingFontVariation = document.getElementById('headingFontVariation').value;
+
+            // Dynamically load the selected Google Font
+            loadFont(paragraphFont);
+            loadFont(headingFont);
+
+            const timestamp = new Date().getTime();
+            const cssStyles = `
+            body {
+                background-color: ${backgroundColor};
+            }
+
+            h1 {
+                font-family: '${headingFont}', sans-serif;
+                font-weight: '${headingFontVariation}'; !important
+                color: ${h1Color};
+            }
+
+            h2 {
+                font-family: '${headingFont}', sans-serif;
+                font-weight: '${headingFontVariation}';
+                color: ${h1Color};
+            }
+
+            h3 {
+                font-family: '${headingFont}', sans-serif;
+                font-weight: '${headingFontVariation}';
+                color: ${h1Color};
+            }
+
+            p {
+                font-family: '${paragraphFont}', sans-serif;
+                font-weight: '${paragraphFontVariation}';
+            }
+
+            label {
+                font-family: '${paragraphFont}', sans-serif;
+                font-weight: '${paragraphFontVariation}';
+            }
+
+            button {
+                font-family: '${paragraphFont}', sans-serif;
+                font-weight: '${paragraphFontVariation}';
+                background-color: ${accentColor};
+                color: white;
+                border: white 2px;
+            }
+
+            .accent {
+                color: ${accentColor};
+            }
+        `;
+
+        // Apply the generated styles to a style tag or wherever needed
+        const styleTag = document.createElement('style');
+            styleTag.id = 'generatedStyles';
+            document.head.appendChild(styleTag);
+        styleTag.textContent = cssStyles;
+        }
+    </script>
+</html>
